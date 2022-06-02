@@ -1,64 +1,58 @@
-<script setup>
-import { Form } from 'ant-design-vue';
-</script>
-
 <template>
   <a-form
+    layout="inline"
     :model="formState"
-    name="basic"
-    :label-col="{ span: 8 }"
-    :wrapper-col="{ span: 16 }"
-    autocomplete="off"
-    @finish="onFinish"
-    @finishFailed="onFinishFailed"
+    @finish="handleFinish"
+    @finishFailed="handleFinishFailed"
   >
-    <a-form-item
-      label="Username"
-      name="username"
-      :rules="[{ required: true, message: 'Please input your username!' }]"
-    >
-      <a-input v-model:value="formState.username" />
+    <a-form-item>
+      <a-input v-model:value="formState.user" placeholder="Username">
+        <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+      </a-input>
     </a-form-item>
-
-    <a-form-item
-      label="Password"
-      name="password"
-      :rules="[{ required: true, message: 'Please input your password!' }]"
-    >
-      <a-input-password v-model:value="formState.password" />
+    <a-form-item>
+      <a-input v-model:value="formState.password" type="password" placeholder="Password">
+        <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+      </a-input>
     </a-form-item>
-
-    <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
-      <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
-    </a-form-item>
-
-    <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-      <a-button type="primary" html-type="submit">Submit</a-button>
+    <a-form-item>
+      <a-button
+        type="primary"
+        html-type="submit"
+        :disabled="formState.user === '' || formState.password === ''"
+      >
+        Log in
+      </a-button>
     </a-form-item>
   </a-form>
 </template>
 <script>
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { defineComponent, reactive } from 'vue';
 export default defineComponent({
+  components: {
+    UserOutlined,
+    LockOutlined,
+  },
+
   setup() {
     const formState = reactive({
-      username: '',
+      user: '',
       password: '',
-      remember: true,
     });
 
-    const onFinish = values => {
-      console.log('Success:', values);
+    const handleFinish = values => {
+      console.log(values, formState);
     };
 
-    const onFinishFailed = errorInfo => {
-      console.log('Failed:', errorInfo);
+    const handleFinishFailed = errors => {
+      console.log(errors);
     };
 
     return {
       formState,
-      onFinish,
-      onFinishFailed,
+      handleFinish,
+      handleFinishFailed,
     };
   },
 
